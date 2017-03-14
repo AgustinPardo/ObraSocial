@@ -17,8 +17,8 @@ class Prestador:
 			if consumo.mes ==mesLiquidar:	
 				sumaTotal=sumaTotal + consumo.valor()
 
-		return(sumaTotal+self.montoFijo)	
-		
+		return(sumaTotal+self.montoFijo)
+			
 class Liquidacion:
 	def __init__(self):		
 		self.listaPrestadores=[]
@@ -30,8 +30,9 @@ class Liquidacion:
 		print("Liquidacion mes: "+str(mes))
 		print("Consumo Valor Hora Dia Mes")
 		sumaMontoFinal=0
-		for presta in self.listaPrestadores:							
+		for presta in self.listaPrestadores:						
 			for consumo in presta.listaConsumos:
+				
 				if mes == consumo.mes:			
 					print(str(consumo.tipo())+" "+ str(consumo.valor())+ " "+ str(consumo.hora)+" "+ str(consumo.dia)+" "+ str(consumo.mes))
 		
@@ -47,18 +48,23 @@ class ConsumoBasico:
 		self.mes=mes
 		self.prestacionBasica = prestacionBasica		
 		
+		desde=8
+		hasta=20		
+		enHora=0.35
+		fueraHora=0.5
+				
 	def tipo(self):
 		return("Basico")	
 	
 	def valorBasico(self):		
 		Monto=0
-		if self.dia != "Domingo" or self.dia != "Sabado":
-			if 8<self.hora<20 :
-				Monto= self.prestacionBasica + self.prestacionBasica*0.35
+		if self.dia != "Domingo" and self.dia != "Sabado":
+			if desde<self.hora<hasta :
+				Monto= self.prestacionBasica + self.prestacionBasica*enHora
 			else:
-				Monto= self.prestacionBasica + self.prestacionBasica*0.5
+				Monto= self.prestacionBasica + self.prestacionBasica*fueraHora
 		else:
-			Monto= self.prestacionBasica + self.prestacionBasica*0.5
+			Monto= self.prestacionBasica + self.prestacionBasica*fueraHora
 				
 		return(Monto)
 		
@@ -82,8 +88,11 @@ class ConsumoDomiciliario(ConsumoBasico):
 		Monto=valorBasico+(valorBasico*0.25)+(self.kms*self.precioKm)
 		return(Monto)
 		
-# Ingreso de datos
-Galeno=Prestador("Galeno",1000,5,100)
+# Ingreso de datos:
+# Prestador(Nombre,Prestacion basico,Precio por km, Monto Fijo)
+# ConsumoBasico(Hora,Dia,Mes,Prestacion basica)
+# ConsumoDomiciliario(Hora,Dia,Mes,Prestacion basica,Precio por km)
+Galeno=Prestador("Galeno",1000,50,100)
 A=ConsumoBasico(5,"Lunes",1,Galeno.prestacionBasica)
 B=ConsumoDomiciliario(10,"Martes",1,20,Galeno.prestacionBasica,Galeno.precioKm)
 C=ConsumoBasico(16,"Sabado",2,Galeno.prestacionBasica)
